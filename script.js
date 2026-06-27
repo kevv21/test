@@ -24,6 +24,10 @@ const CONFIG = {
 
   moneda: "C$",
 
+  // IVA: se suma a los precios base del menú y se muestra ya incluido en
+  // tarjetas, carrito, total y mensaje de WhatsApp. 0.15 = 15%. Poné 0 para quitarlo.
+  iva: 0.15,
+
   // GALERÍA: nombres de archivo dentro de assets/fotos/ (tus publicaciones).
   // Solo aparecen las que existan; si no hay ninguna, la sección se oculta sola.
   galeria: [
@@ -89,6 +93,8 @@ const CAT_LABEL = {
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const money = (n) => `${CONFIG.moneda} ${n.toLocaleString("es-NI")}`;
+// Precio con IVA incluido, redondeado al córdoba más cercano
+const precioFinal = (base) => Math.round(base * (1 + (CONFIG.iva || 0)));
 const waLink = (text) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
 
 function toast(msg) {
@@ -114,7 +120,7 @@ function renderMenu(filter = "all") {
       <h3 class="card__name">${p.name}</h3>
       <p class="card__desc">${p.desc}</p>
       <div class="card__foot">
-        <span class="card__price">${money(p.price)}</span>
+        <span class="card__price">${money(precioFinal(p.price))}</span>
         <button class="card__add" data-name="${p.name}">Agregar</button>
       </div>`;
     menuGrid.appendChild(card);
@@ -138,7 +144,7 @@ const cart = new Map(); // name -> { ...pizza, qty }
 function addToCart(name) {
   const pizza = MENU.find((p) => p.name === name);
   if (!pizza) return;
-  const item = cart.get(name) || { ...pizza, qty: 0 };
+  const item = cart.get(name) || { ...pizza, price: precioFinal(pizza.price), qty: 0 };
   item.qty += 1;
   cart.set(name, item);
   renderCart();
@@ -238,6 +244,7 @@ $("#sendOrder").addEventListener("click", () => {
   msg += `\n*Pedido:*\n`;
   cart.forEach((i) => (msg += `• ${i.qty}x ${i.name} — ${money(i.price * i.qty)}\n`));
   msg += `\n*TOTAL: ${money(cartTotal())}*`;
+  if (CONFIG.iva) msg += ` _(IVA ${Math.round(CONFIG.iva * 100)}% incluido)_`;
   if (notes) msg += `\n\n*Notas:* ${notes}`;
 
   window.open(waLink(msg), "_blank");

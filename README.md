@@ -59,7 +59,9 @@ fotos se agregan a mano.)*
 
 ## Notas
 
-- Los precios corresponden a la pizza de 14″ del menú.
+- Los precios corresponden a la pizza de 14″ del menú e **incluyen IVA (15%)**.
+  El IVA se aplica automáticamente sobre los precios base; ajustá o quitá el
+  porcentaje en `CONFIG.iva` (`0.15` = 15%, `0` = sin IVA).
 - La disponibilidad de reservas se calcula en el dispositivo (demo). Para que sea
   compartida entre todos los clientes en tiempo real hace falta un backend o
   conectarlo al bot de WhatsApp (ver guía aparte).
