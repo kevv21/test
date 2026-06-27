@@ -1,27 +1,52 @@
-# Excel Data Manager
+# 🍕 Rock Munchies — Sitio web
 
-A browser-based tool to upload, view, edit, and describe Excel/CSV data — no server required.
+Sitio web para **Rock Munchies**, pizzería al estilo romano (delivery y local) con
+inspiración en el rock latinoamericano e inglés. Estático, sin servidor: funciona
+abriendo `index.html` en cualquier navegador y se ve igual en teléfono y computadora.
 
-## Features
+## Funciones
 
-- **Upload** `.xlsx`, `.xls`, or `.csv` files via drag-and-drop or file picker
-- **Multi-sheet** support with tab switching
-- **View** data in a paginated, sortable table
-- **Search** across all columns in real time
-- **Edit** any cell by double-clicking
-- **Add / delete** rows
-- **Describe** data — per-column stats: count, missing, unique, min, max, mean, median, sum (numeric), top values (text)
-- **Download** modified data as CSV or Excel
+- **Menú** completo por categorías (Clásicas, Old School, New School, Especiales) con filtros.
+- **Pedido online**: armás el carrito y se envía listo por **WhatsApp** (delivery o recoger en local).
+- **Reservas** con verificación de **disponibilidad** por fecha, hora y cantidad de personas.
+- **Contacto** con teléfono, email, redes, horario y mapa de Google.
+- **Responsive**: diseño adaptable a celular y escritorio, con estética rock (oscuro + dorado).
 
-## Usage
+## Archivos
 
-1. Open `index.html` in any modern browser (Chrome, Firefox, Edge, Safari).
-2. Drag your file onto the upload area, or click **Choose File**.
-3. Browse and edit the table. Double-click any cell to edit, press Enter or Tab to confirm.
-4. Click **+ Add Row** to append a blank row; click **✕** on any row to delete it.
-5. Use the search box to filter rows, and the column headers to sort.
-6. When done, click **Download CSV** or **Download Excel** in the top-right corner.
+| Archivo | Qué contiene |
+|---|---|
+| `index.html` | Estructura de la página |
+| `styles.css` | Estilos y diseño responsive |
+| `script.js`  | Menú, carrito, reservas y configuración |
 
-## Requirements
+## ✏️ Configuración (importante)
 
-Internet connection (CDN loads SheetJS once), or serve the page locally with SheetJS bundled.
+Abrí **`script.js`** y editá el objeto `CONFIG` al inicio con tus datos reales:
+
+```js
+const CONFIG = {
+  whatsapp: "50500000000",   // tu número con código de país, solo dígitos
+  telefono:  "+505 0000 0000",
+  email:     "hola@rockmunchies.com",
+  direccion: "Tu dirección, ciudad, Nicaragua",
+  instagram: "https://instagram.com/...",
+  facebook:  "https://facebook.com/...",
+  mapsQuery: "Managua, Nicaragua",   // dirección o coordenadas para el mapa
+  ...
+};
+```
+
+También podés ajustar el horario y la capacidad de las reservas en `CONFIG.reservas`.
+
+## Cómo verlo
+
+- **Local:** abrí `index.html` en el navegador (doble clic).
+- **Publicarlo gratis:** subí estos archivos a **GitHub Pages**, **Netlify** o **Vercel**.
+
+## Notas
+
+- Los precios corresponden a la pizza de 14″ del menú.
+- La disponibilidad de reservas se calcula en el dispositivo (demo). Para que sea
+  compartida entre todos los clientes en tiempo real hace falta un backend o
+  conectarlo al bot de WhatsApp (ver guía aparte).

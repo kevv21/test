@@ -1,765 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Excel Data Manager</title>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta name="theme-color" content="#0e0e0e" />
+  <meta name="description" content="Rock Munchies — Pizza al estilo romano. Delivery y local con la mejor vibra del rock latinoamericano e inglés. Mirá el menú, pedí online y reservá tu mesa." />
+  <title>Rock Munchies · Pizza al estilo romano</title>
 
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --warning: #d97706;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --header-bg: #1e293b;
-    }
+  <!-- Tipografías con onda rock -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--header-bg);
-      color: #fff;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 60px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    header .logo { font-size: 1.5rem; }
-
-    .header-actions { display: flex; gap: 0.5rem; }
-
-    main { max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem; }
-
-    .upload-zone {
-      border: 2px dashed var(--primary);
-      border-radius: 12px;
-      padding: 3rem 2rem;
-      text-align: center;
-      background: var(--card);
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-      margin-bottom: 1.5rem;
-    }
-    .upload-zone:hover, .upload-zone.dragover {
-      background: #eff6ff;
-      border-color: var(--primary-dark);
-    }
-    .upload-zone .upload-icon { font-size: 3rem; margin-bottom: 0.75rem; }
-    .upload-zone h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .upload-zone p { color: var(--text-muted); font-size: 0.875rem; }
-    #fileInput { display: none; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.45rem 1rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    .btn:hover { opacity: 0.88; }
-    .btn:active { transform: scale(0.97); }
-    .btn-primary   { background: var(--primary);   color: #fff; }
-    .btn-success   { background: var(--success);   color: #fff; }
-    .btn-danger    { background: var(--danger);     color: #fff; }
-    .btn-warning   { background: var(--warning);   color: #fff; }
-    .btn-secondary { background: #475569; color: #fff; }
-    .btn-light     { background: var(--border); color: var(--text); }
-
-    .workspace { display: none; flex-direction: column; gap: 1.5rem; }
-    .workspace.visible { display: flex; }
-
-    .card {
-      background: var(--card);
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-    .card-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .card-header h3 { font-size: 1rem; font-weight: 600; }
-    .card-body { padding: 1.25rem; }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .search-box {
-      flex: 1;
-      min-width: 180px;
-      padding: 0.45rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.875rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .search-box:focus { border-color: var(--primary); }
-
-    .sheet-tabs {
-      display: flex;
-      gap: 0.25rem;
-      flex-wrap: wrap;
-      padding: 0.75rem 1.25rem 0;
-    }
-    .sheet-tab {
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px 6px 0 0;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      background: #f8fafc;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      transition: background 0.15s;
-    }
-    .sheet-tab.active { background: var(--card); color: var(--primary); border-bottom: 1px solid var(--card); margin-bottom: -1px; }
-
-    .table-wrapper { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    thead th {
-      background: #f8fafc;
-      padding: 0.6rem 0.75rem;
-      text-align: left;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      border-bottom: 2px solid var(--border);
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-    }
-    thead th .col-sort { cursor: pointer; user-select: none; }
-    thead th .sort-icon { margin-left: 4px; opacity: 0.4; }
-    thead th.sorted .sort-icon { opacity: 1; color: var(--primary); }
-
-    tbody tr:hover { background: #f8fafc; }
-    tbody td {
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border);
-      max-width: 250px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    tbody td.editing { padding: 0; overflow: visible; }
-    tbody td input.cell-input {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      border: 2px solid var(--primary);
-      outline: none;
-      font-size: 0.85rem;
-      background: #eff6ff;
-    }
-    tbody td.row-actions { white-space: nowrap; }
-    tbody td.row-num { color: var(--text-muted); font-size: 0.75rem; user-select: none; }
-
-    .pagination {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: center;
-      padding: 1rem;
-      flex-wrap: wrap;
-    }
-    .page-btn {
-      padding: 0.35rem 0.7rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--card);
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: background 0.15s;
-    }
-    .page-btn:hover { background: #eff6ff; border-color: var(--primary); }
-    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .page-info { font-size: 0.8rem; color: var(--text-muted); }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1rem;
-    }
-    .stat-card {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      background: #f8fafc;
-    }
-    .stat-card h4 {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      padding: 0.2rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-label { color: var(--text-muted); }
-    .stat-value { font-weight: 600; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    .badge {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
-    .badge-green  { background: #dcfce7; color: #15803d; }
-    .badge-yellow { background: #fef9c3; color: #854d0e; }
-
-    .file-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-    }
-    .file-info strong { color: var(--text); }
-
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--header-bg);
-      color: #fff;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      z-index: 9999;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: translateY(0); }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-
-    @media (max-width: 600px) {
-      main { padding: 1rem; }
-      .card-header { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header>
-  <h1><span class="logo">📊</span> Excel Data Manager</h1>
-  <div class="header-actions">
-    <button class="btn btn-success" id="btnDownloadCSV" style="display:none" onclick="downloadCSV()">⬇ Download CSV</button>
-    <button class="btn btn-warning" id="btnDownloadXLSX" style="display:none" onclick="downloadXLSX()">⬇ Download Excel</button>
-    <button class="btn btn-secondary" id="btnReset" style="display:none" onclick="resetApp()">✕ Close File</button>
-  </div>
-</header>
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" id="top">
+    <div class="nav__inner container">
+      <a href="#top" class="brand" aria-label="Rock Munchies inicio">
+        <span class="brand__rock">ROCK</span>
+        <span class="brand__munchies">MUNCHIES</span>
+      </a>
 
-<main>
-  <!-- Upload Zone -->
-  <div class="upload-zone" id="uploadZone">
-    <div class="upload-icon">📂</div>
-    <h2>Upload Excel or CSV File</h2>
-    <p>Drag &amp; drop your file here, or click to browse</p>
-    <br>
-    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Choose File</button>
-    <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--text-muted)">Supports .xlsx · .xls · .csv</p>
-    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFile(event)" />
-  </div>
+      <nav class="nav__links" id="navLinks">
+        <a href="#menu">Menú</a>
+        <a href="#pedido">Pedido</a>
+        <a href="#reservas">Reservas</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#" class="btn btn--wa" data-wa="hola">WhatsApp</a>
+      </nav>
 
-  <!-- Workspace -->
-  <div class="workspace" id="workspace">
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Info bar -->
-    <div class="card">
-      <div class="card-body">
-        <div class="file-info" id="fileInfo"></div>
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero__grain" aria-hidden="true"></div>
+    <div class="hero__content container">
+      <p class="hero__eyebrow">🤘 Pizza al estilo romano · Delivery &amp; Local</p>
+      <h1 class="hero__title">
+        <span>ROCK</span>
+        <span class="hero__title-accent">MUNCHIES</span>
+      </h1>
+      <p class="hero__sub">
+        Masa fina y crocante al estilo romano, ingredientes que rockean y la mejor playlist
+        del rock latino e inglés. Para toda la familia, a todo volumen.
+      </p>
+      <div class="hero__cta">
+        <a href="#menu" class="btn btn--primary">Ver el menú</a>
+        <a href="#" class="btn btn--ghost" data-wa="hola">Pedir por WhatsApp</a>
       </div>
     </div>
+    <div class="hero__marquee" aria-hidden="true">
+      <div class="hero__marquee-track">
+        <span>★ ESTILO ROMANO</span><span>★ DELIVERY &amp; LOCAL</span><span>★ ROCK LATAM &amp; UK</span>
+        <span>★ PARA TODA LA FAMILIA</span><span>★ MASA CROCANTE</span>
+        <span>★ ESTILO ROMANO</span><span>★ DELIVERY &amp; LOCAL</span><span>★ ROCK LATAM &amp; UK</span>
+        <span>★ PARA TODA LA FAMILIA</span><span>★ MASA CROCANTE</span>
+      </div>
+    </div>
+  </section>
 
-    <!-- Data Table Card -->
-    <div class="card">
-      <div class="card-header">
-        <h3>📋 Data Table</h3>
-        <div class="toolbar">
-          <input class="search-box" id="searchBox" type="text" placeholder="Search all columns…" oninput="applySearch()" />
-          <button class="btn btn-primary" onclick="addRow()">+ Add Row</button>
-          <select id="pageSizeSelect" class="search-box" style="max-width:110px" onchange="changePageSize()">
-            <option value="20">20 / page</option>
-            <option value="50">50 / page</option>
-            <option value="100">100 / page</option>
-            <option value="0">All rows</option>
-          </select>
+  <!-- ===================== MENÚ ===================== -->
+  <section class="section" id="menu">
+    <div class="container">
+      <header class="section__head">
+        <p class="section__kicker">El setlist</p>
+        <h2 class="section__title">Nuestro Menú</h2>
+        <p class="section__lead">
+          Pizzas al estilo romano de 14&Prime;. Tocá <strong>Agregar</strong> para armar tu pedido.
+        </p>
+      </header>
+
+      <div class="filters" id="filters" role="tablist" aria-label="Categorías del menú">
+        <button class="filter is-active" data-filter="all">Todas</button>
+        <button class="filter" data-filter="clasicas">Clásicas</button>
+        <button class="filter" data-filter="oldschool">Old School</button>
+        <button class="filter" data-filter="newschool">New School</button>
+        <button class="filter" data-filter="especiales">Especiales</button>
+      </div>
+
+      <div class="menu-grid" id="menuGrid"><!-- render dinámico --></div>
+    </div>
+  </section>
+
+  <!-- ===================== PEDIDO ===================== -->
+  <section class="section section--alt" id="pedido">
+    <div class="container">
+      <header class="section__head">
+        <p class="section__kicker">Tu orden</p>
+        <h2 class="section__title">Armá tu Pedido</h2>
+        <p class="section__lead">Lo enviás directo por WhatsApp y coordinás el pago. Sin vueltas.</p>
+      </header>
+
+      <div class="order">
+        <div class="order__items" id="orderItems">
+          <p class="order__empty" id="orderEmpty">
+            Tu pedido está vacío. Andá al menú y agregá unas pizzas 🍕
+          </p>
+        </div>
+
+        <aside class="order__panel">
+          <h3 class="order__panel-title">Resumen</h3>
+
+          <div class="order__total-row">
+            <span>Total</span>
+            <strong id="orderTotal">C$ 0</strong>
+          </div>
+
+          <div class="field">
+            <label>Tipo de pedido</label>
+            <div class="seg">
+              <button type="button" class="seg__btn is-active" data-type="delivery">Delivery</button>
+              <button type="button" class="seg__btn" data-type="local">Recoger en local</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="ordName">Tu nombre</label>
+            <input type="text" id="ordName" placeholder="Ej: Ana Rocker" />
+          </div>
+
+          <div class="field" id="addressField">
+            <label for="ordAddress">Dirección de entrega</label>
+            <input type="text" id="ordAddress" placeholder="Barrio, calle, referencias…" />
+          </div>
+
+          <div class="field">
+            <label for="ordNotes">Notas (opcional)</label>
+            <input type="text" id="ordNotes" placeholder="Ej: sin cebolla, extra queso…" />
+          </div>
+
+          <button class="btn btn--wa btn--block" id="sendOrder">Enviar pedido por WhatsApp</button>
+          <p class="order__hint">Se abrirá WhatsApp con tu pedido listo para enviar.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESERVAS ===================== -->
+  <section class="section" id="reservas">
+    <div class="container">
+      <header class="section__head">
+        <p class="section__kicker">Tu mesa</p>
+        <h2 class="section__title">Reservá en el Local</h2>
+        <p class="section__lead">Elegí fecha, hora y cantidad de personas. Verificamos la disponibilidad al instante.</p>
+      </header>
+
+      <div class="reserve">
+        <form class="reserve__form" id="reserveForm">
+          <div class="field">
+            <label for="resName">Nombre</label>
+            <input type="text" id="resName" placeholder="A nombre de…" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="resDate">Fecha</label>
+              <input type="date" id="resDate" required />
+            </div>
+            <div class="field">
+              <label for="resTime">Hora</label>
+              <select id="resTime" required></select>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="resPeople">Personas</label>
+              <input type="number" id="resPeople" min="1" max="30" value="2" required />
+            </div>
+            <div class="field">
+              <label for="resPhone">Teléfono</label>
+              <input type="tel" id="resPhone" placeholder="Para confirmarte" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--block">Verificar disponibilidad</button>
+        </form>
+
+        <aside class="reserve__status" id="reserveStatus">
+          <div class="reserve__status-icon">🎸</div>
+          <p>Completá el formulario para ver si hay lugar en el horario que querés.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACTO ===================== -->
+  <section class="section section--alt" id="contacto">
+    <div class="container">
+      <header class="section__head">
+        <p class="section__kicker">Pasate a saludar</p>
+        <h2 class="section__title">Contacto &amp; Ubicación</h2>
+      </header>
+
+      <div class="contact">
+        <div class="contact__info">
+          <div class="contact__item">
+            <span class="contact__ico">📍</span>
+            <div>
+              <h4>Dónde estamos</h4>
+              <p id="cDireccion">Editá tu dirección en <code>script.js</code></p>
+            </div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__ico">📞</span>
+            <div>
+              <h4>Teléfono / WhatsApp</h4>
+              <p><a id="cTel" href="#">+505 0000 0000</a></p>
+            </div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__ico">✉️</span>
+            <div>
+              <h4>Email</h4>
+              <p><a id="cEmail" href="#">hola@rockmunchies.com</a></p>
+            </div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__ico">🕒</span>
+            <div>
+              <h4>Horario</h4>
+              <p id="cHorario">Mar a Dom · 12:00 – 22:00</p>
+            </div>
+          </div>
+          <div class="contact__socials" id="cSocials"></div>
+          <a href="#" class="btn btn--wa btn--block" data-wa="hola">Escribinos por WhatsApp</a>
+        </div>
+
+        <div class="contact__map">
+          <iframe
+            id="cMap"
+            title="Ubicación de Rock Munchies"
+            src="https://www.google.com/maps?q=Managua%2C%20Nicaragua&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
         </div>
       </div>
-      <div id="sheetTabs" class="sheet-tabs"></div>
-      <div class="table-wrapper">
-        <table id="dataTable">
-          <thead id="tableHead"></thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-        <div class="empty-state" id="emptyState" style="display:none">
-          <div class="icon">🔍</div>
-          <p>No matching rows found.</p>
-        </div>
-      </div>
-      <div class="pagination" id="pagination"></div>
     </div>
+  </section>
 
-    <!-- Describe / Stats Card -->
-    <div class="card">
-      <div class="card-header">
-        <h3>📈 Data Description</h3>
-        <span id="statsSubtitle" class="badge badge-blue"></span>
-      </div>
-      <div class="card-body">
-        <div class="stats-grid" id="statsGrid"></div>
-      </div>
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="#top" class="brand brand--sm">
+        <span class="brand__rock">ROCK</span>
+        <span class="brand__munchies">MUNCHIES</span>
+      </a>
+      <p>Pizza al estilo romano · Delivery &amp; Local · Rock LATAM &amp; UK 🤘</p>
+      <p class="footer__copy">© <span id="year"></span> Rock Munchies. Hecho con masa, queso y mucho rock.</p>
     </div>
+  </footer>
 
-  </div>
-</main>
+  <!-- Carrito flotante -->
+  <a href="#pedido" class="cart-fab" id="cartFab" aria-label="Ver pedido">
+    🛒 <span class="cart-fab__count" id="cartCount">0</span>
+  </a>
 
-<div class="toast" id="toast"></div>
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>
-// ─── State ───────────────────────────────────────────────────────────────────
-let workbook = null;
-let sheetNames = [];
-let currentSheet = 0;
-let originalData = [];   // array of arrays [header, ...rows]
-let filteredRows = [];   // filtered row indices into originalData (skip index 0)
-let pageSize = 20;
-let currentPage = 1;
-let sortCol = -1;
-let sortAsc = true;
-let fileName = '';
-
-// ─── Upload ──────────────────────────────────────────────────────────────────
-const uploadZone = document.getElementById('uploadZone');
-uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
-uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-uploadZone.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadZone.classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file) processFile(file);
-});
-
-function handleFile(event) {
-  const file = event.target.files[0];
-  if (file) processFile(file);
-}
-
-function processFile(file) {
-  fileName = file.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const data = new Uint8Array(e.target.result);
-    workbook = XLSX.read(data, { type: 'array', cellDates: true });
-    sheetNames = workbook.SheetNames;
-    currentSheet = 0;
-    loadSheet(0);
-    showWorkspace(file);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function loadSheet(idx) {
-  currentSheet = idx;
-  const ws = workbook.Sheets[sheetNames[idx]];
-  const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-  // Ensure all rows same length
-  const maxCols = aoa.reduce((m, r) => Math.max(m, r.length), 0);
-  originalData = aoa.map(r => {
-    while (r.length < maxCols) r.push('');
-    return r;
-  });
-  if (originalData.length === 0) originalData = [[]];
-  sortCol = -1; sortAsc = true;
-  applySearch();
-  buildStats();
-}
-
-function showWorkspace(file) {
-  document.getElementById('uploadZone').style.display = 'none';
-  document.getElementById('workspace').classList.add('visible');
-  document.getElementById('btnDownloadCSV').style.display = '';
-  document.getElementById('btnDownloadXLSX').style.display = '';
-  document.getElementById('btnReset').style.display = '';
-  buildSheetTabs();
-  updateFileInfo(file);
-  toast(`Loaded "${file.name}" ✓`);
-}
-
-function updateFileInfo(file) {
-  const rows = originalData.length - 1;
-  const cols = originalData[0].length;
-  document.getElementById('fileInfo').innerHTML = `
-    <span><strong>${file.name}</strong></span>
-    <span class="badge badge-blue">Sheet: ${sheetNames[currentSheet]}</span>
-    <span class="badge badge-green">${rows} rows</span>
-    <span class="badge badge-yellow">${cols} columns</span>
-    <span>${(file.size/1024).toFixed(1)} KB</span>
-  `;
-}
-
-function buildSheetTabs() {
-  const container = document.getElementById('sheetTabs');
-  container.innerHTML = sheetNames.map((name, i) =>
-    `<div class="sheet-tab ${i === currentSheet ? 'active' : ''}" onclick="switchSheet(${i})">${name}</div>`
-  ).join('');
-}
-
-function switchSheet(idx) {
-  loadSheet(idx);
-  buildSheetTabs();
-  const fakeFile = { name: fileName, size: 0 };
-  document.getElementById('fileInfo').innerHTML = `
-    <span><strong>${fileName}</strong></span>
-    <span class="badge badge-blue">Sheet: ${sheetNames[idx]}</span>
-    <span class="badge badge-green">${originalData.length - 1} rows</span>
-    <span class="badge badge-yellow">${originalData[0].length} columns</span>
-  `;
-}
-
-// ─── Search & Sort ───────────────────────────────────────────────────────────
-function applySearch() {
-  const q = document.getElementById('searchBox').value.toLowerCase();
-  const rowCount = originalData.length;
-  filteredRows = [];
-  for (let i = 1; i < rowCount; i++) {
-    if (!q || originalData[i].some(cell => String(cell).toLowerCase().includes(q))) {
-      filteredRows.push(i);
-    }
-  }
-  if (sortCol >= 0) applySort();
-  currentPage = 1;
-  renderTable();
-}
-
-function sortBy(col) {
-  if (sortCol === col) { sortAsc = !sortAsc; }
-  else { sortCol = col; sortAsc = true; }
-  applySort();
-  currentPage = 1;
-  renderTable();
-}
-
-function applySort() {
-  const col = sortCol;
-  filteredRows.sort((a, b) => {
-    const va = originalData[a][col];
-    const vb = originalData[b][col];
-    const na = parseFloat(va), nb = parseFloat(vb);
-    if (!isNaN(na) && !isNaN(nb)) return sortAsc ? na - nb : nb - na;
-    return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
-  });
-}
-
-// ─── Render Table ────────────────────────────────────────────────────────────
-function renderTable() {
-  const head = document.getElementById('tableHead');
-  const body = document.getElementById('tableBody');
-  const header = originalData[0] || [];
-
-  // Header
-  head.innerHTML = '<tr>' +
-    '<th style="width:40px">#</th>' +
-    header.map((h, i) => {
-      const isSorted = sortCol === i;
-      const arrow = isSorted ? (sortAsc ? '▲' : '▼') : '▲';
-      return `<th class="${isSorted ? 'sorted' : ''}">
-        <span class="col-sort" onclick="sortBy(${i})">${escHtml(String(h))} <span class="sort-icon">${arrow}</span></span>
-      </th>`;
-    }).join('') +
-    '<th style="width:80px">Actions</th></tr>';
-
-  // Pagination
-  const ps = pageSize === 0 ? filteredRows.length : pageSize;
-  const totalPages = ps === 0 ? 1 : Math.max(1, Math.ceil(filteredRows.length / ps));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = ps === 0 ? 0 : (currentPage - 1) * ps;
-  const pageRows = ps === 0 ? filteredRows : filteredRows.slice(start, start + ps);
-
-  document.getElementById('emptyState').style.display = filteredRows.length === 0 ? '' : 'none';
-
-  body.innerHTML = pageRows.map(ri => {
-    const row = originalData[ri];
-    return `<tr id="row-${ri}">
-      <td class="row-num">${ri}</td>
-      ${row.map((cell, ci) =>
-        `<td ondblclick="startEdit(${ri},${ci})" title="${escHtml(String(cell))}">${escHtml(String(cell))}</td>`
-      ).join('')}
-      <td class="row-actions">
-        <button class="btn btn-danger" style="padding:0.25rem 0.5rem;font-size:0.75rem" onclick="deleteRow(${ri})">✕</button>
-      </td>
-    </tr>`;
-  }).join('');
-
-  renderPagination(totalPages);
-}
-
-function renderPagination(total) {
-  const pg = document.getElementById('pagination');
-  if (total <= 1) { pg.innerHTML = `<span class="page-info">${filteredRows.length} rows</span>`; return; }
-  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
-  const window_size = 5;
-  let lo = Math.max(1, currentPage - 2), hi = Math.min(total, lo + window_size - 1);
-  if (hi - lo < window_size - 1) lo = Math.max(1, hi - window_size + 1);
-  if (lo > 1) html += `<button class="page-btn" onclick="goPage(1)">1</button>${lo > 2 ? '<span>…</span>' : ''}`;
-  for (let p = lo; p <= hi; p++)
-    html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
-  if (hi < total) html += `${hi < total-1 ? '<span>…</span>' : ''}<button class="page-btn" onclick="goPage(${total})">${total}</button>`;
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>›</button>`;
-  html += `<span class="page-info">${filteredRows.length} rows · page ${currentPage}/${total}</span>`;
-  pg.innerHTML = html;
-}
-
-function goPage(p) {
-  const ps = pageSize === 0 ? filteredRows.length : pageSize;
-  const total = Math.max(1, Math.ceil(filteredRows.length / (ps||1)));
-  currentPage = Math.min(Math.max(1, p), total);
-  renderTable();
-}
-
-function changePageSize() {
-  pageSize = parseInt(document.getElementById('pageSizeSelect').value);
-  currentPage = 1;
-  renderTable();
-}
-
-// ─── Edit ────────────────────────────────────────────────────────────────────
-let editingCell = null;
-
-function startEdit(rowIdx, colIdx) {
-  if (editingCell) commitEdit();
-  const tr = document.getElementById(`row-${rowIdx}`);
-  if (!tr) return;
-  const tds = tr.querySelectorAll('td');
-  const td = tds[colIdx + 1]; // offset for row-num column
-  if (!td) return;
-  const val = originalData[rowIdx][colIdx];
-  td.classList.add('editing');
-  td.innerHTML = `<input class="cell-input" id="cellInput" value="${escHtml(String(val))}"
-    onblur="commitEdit()" onkeydown="handleCellKey(event,${rowIdx},${colIdx})" />`;
-  const inp = document.getElementById('cellInput');
-  inp.focus(); inp.select();
-  editingCell = { rowIdx, colIdx, td };
-}
-
-function commitEdit() {
-  if (!editingCell) return;
-  const inp = document.getElementById('cellInput');
-  if (!inp) { editingCell = null; return; }
-  const val = inp.value;
-  const { rowIdx, colIdx, td } = editingCell;
-  originalData[rowIdx][colIdx] = val;
-  td.classList.remove('editing');
-  td.innerHTML = escHtml(val);
-  td.setAttribute('ondblclick', `startEdit(${rowIdx},${colIdx})`);
-  td.setAttribute('title', escHtml(val));
-  editingCell = null;
-  buildStats();
-}
-
-function handleCellKey(e, ri, ci) {
-  if (e.key === 'Enter') { commitEdit(); }
-  else if (e.key === 'Escape') {
-    editingCell = null;
-    renderTable();
-  } else if (e.key === 'Tab') {
-    e.preventDefault();
-    commitEdit();
-    const nextCol = e.shiftKey ? ci - 1 : ci + 1;
-    if (nextCol >= 0 && nextCol < originalData[0].length) startEdit(ri, nextCol);
-  }
-}
-
-// ─── Add / Delete Row ────────────────────────────────────────────────────────
-function addRow() {
-  const cols = originalData[0].length;
-  originalData.push(new Array(cols).fill(''));
-  applySearch();
-  goPage(Math.ceil(filteredRows.length / (pageSize || filteredRows.length)));
-  buildStats();
-  toast('Row added');
-}
-
-function deleteRow(idx) {
-  originalData.splice(idx, 1);
-  // Re-index filteredRows
-  applySearch();
-  buildStats();
-  toast('Row deleted');
-}
-
-// ─── Stats ───────────────────────────────────────────────────────────────────
-function buildStats() {
-  const grid = document.getElementById('statsGrid');
-  const header = originalData[0] || [];
-  const rows = originalData.slice(1);
-  document.getElementById('statsSubtitle').textContent = `${rows.length} rows × ${header.length} cols`;
-
-  grid.innerHTML = header.map((colName, ci) => {
-    const vals = rows.map(r => r[ci]);
-    const nonEmpty = vals.filter(v => v !== '' && v !== null && v !== undefined);
-    const numVals = nonEmpty.map(v => parseFloat(v)).filter(v => !isNaN(v));
-    const isNumeric = numVals.length > 0 && numVals.length === nonEmpty.length;
-    const uniqueVals = [...new Set(nonEmpty.map(String))];
-
-    let statsHtml = `
-      <div class="stat-row"><span class="stat-label">Count</span><span class="stat-value">${nonEmpty.length}</span></div>
-      <div class="stat-row"><span class="stat-label">Missing</span><span class="stat-value">${vals.length - nonEmpty.length}</span></div>
-      <div class="stat-row"><span class="stat-label">Unique</span><span class="stat-value">${uniqueVals.length}</span></div>
-    `;
-
-    if (isNumeric && numVals.length > 0) {
-      const sorted = [...numVals].sort((a,b)=>a-b);
-      const sum = numVals.reduce((a,b)=>a+b,0);
-      const mean = sum / numVals.length;
-      const mid = Math.floor(sorted.length / 2);
-      const median = sorted.length % 2 === 0 ? (sorted[mid-1]+sorted[mid])/2 : sorted[mid];
-      statsHtml += `
-        <div class="stat-row"><span class="stat-label">Min</span><span class="stat-value">${fmt(sorted[0])}</span></div>
-        <div class="stat-row"><span class="stat-label">Max</span><span class="stat-value">${fmt(sorted[sorted.length-1])}</span></div>
-        <div class="stat-row"><span class="stat-label">Mean</span><span class="stat-value">${fmt(mean)}</span></div>
-        <div class="stat-row"><span class="stat-label">Median</span><span class="stat-value">${fmt(median)}</span></div>
-        <div class="stat-row"><span class="stat-label">Sum</span><span class="stat-value">${fmt(sum)}</span></div>
-      `;
-    } else if (uniqueVals.length > 0) {
-      const freq = {};
-      nonEmpty.forEach(v => { const k = String(v); freq[k] = (freq[k]||0)+1; });
-      const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3);
-      statsHtml += top.map(([k,n]) =>
-        `<div class="stat-row"><span class="stat-label" title="${escHtml(k)}">${escHtml(truncate(k,18))}</span><span class="stat-value">${n} (${((n/vals.length)*100).toFixed(0)}%)</span></div>`
-      ).join('');
-    }
-
-    return `<div class="stat-card"><h4 title="${escHtml(String(colName))}">${escHtml(truncate(String(colName),28))}</h4>${statsHtml}</div>`;
-  }).join('');
-}
-
-// ─── Download ────────────────────────────────────────────────────────────────
-function downloadCSV() {
-  const ws = XLSX.utils.aoa_to_sheet(originalData);
-  const csv = XLSX.utils.sheet_to_csv(ws);
-  triggerDownload(csv, 'text/csv', baseName() + '_edited.csv');
-  toast('CSV downloaded');
-}
-
-function downloadXLSX() {
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(originalData);
-  XLSX.utils.book_append_sheet(wb, ws, sheetNames[currentSheet] || 'Sheet1');
-  XLSX.writeFile(wb, baseName() + '_edited.xlsx');
-  toast('Excel file downloaded');
-}
-
-function triggerDownload(content, type, name) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = name; a.click();
-  URL.revokeObjectURL(url);
-}
-
-function baseName() {
-  return fileName.replace(/\.[^.]+$/, '');
-}
-
-// ─── Reset ───────────────────────────────────────────────────────────────────
-function resetApp() {
-  workbook = null; originalData = []; filteredRows = []; fileName = '';
-  document.getElementById('uploadZone').style.display = '';
-  document.getElementById('workspace').classList.remove('visible');
-  document.getElementById('btnDownloadCSV').style.display = 'none';
-  document.getElementById('btnDownloadXLSX').style.display = 'none';
-  document.getElementById('btnReset').style.display = 'none';
-  document.getElementById('fileInput').value = '';
-  document.getElementById('searchBox').value = '';
-  document.getElementById('sheetTabs').innerHTML = '';
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function fmt(n) { return Number.isInteger(n) ? n : parseFloat(n.toFixed(4)); }
-function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
-
-let toastTimer;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
-}
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
