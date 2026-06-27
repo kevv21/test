@@ -7,22 +7,29 @@
    ---------------------------------------------------------- */
 const CONFIG = {
   // Número de WhatsApp con código de país, SOLO dígitos (sin +, sin espacios).
-  // Ej. Nicaragua: 505 + número  ->  "50588887777"
-  whatsapp: "50500000000",
+  // ⚠️ Confirmá tu número de WhatsApp (puede ser distinto al fijo del local).
+  whatsapp: "50522935514",
 
-  telefono:  "+505 0000 0000",
-  email:     "hola@rockmunchies.com",
-  direccion: "Tu dirección, ciudad, Nicaragua",
+  telefono:  "+505 2293 5514",
+  email:     "rockmunchies@gmail.com",
+  direccion: "Los Robles, Managua, Nicaragua",
 
   // Redes (dejá "" para ocultar el botón)
-  instagram: "https://instagram.com/",
-  facebook:  "https://facebook.com/",
+  instagram: "https://instagram.com/rockmunchies",
+  facebook:  "https://facebook.com/rockmunchies",
   tiktok:    "",
 
   // Mapa: pegá una dirección o coordenadas para el embed de Google Maps
-  mapsQuery: "Managua, Nicaragua",
+  mapsQuery: "Rock Munchies, Los Robles, Managua, Nicaragua",
 
   moneda: "C$",
+
+  // GALERÍA: nombres de archivo dentro de assets/fotos/ (tus publicaciones).
+  // Solo aparecen las que existan; si no hay ninguna, la sección se oculta sola.
+  galeria: [
+    "foto-1.jpg", "foto-2.jpg", "foto-3.jpg",
+    "foto-4.jpg", "foto-5.jpg", "foto-6.jpg",
+  ],
 
   // Horario y capacidad para las RESERVAS
   reservas: {
@@ -369,8 +376,44 @@ function bindWaButtons() {
     .map(([label, url]) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`)
     .join("");
 
+  const gIg = $("#gIg"), gFb = $("#gFb");
+  if (gIg && CONFIG.instagram) gIg.href = CONFIG.instagram;
+  if (gFb && CONFIG.facebook) gFb.href = CONFIG.facebook;
+
   $("#year").textContent = new Date().getFullYear();
   bindWaButtons();
+})();
+
+/* ----------------------------------------------------------
+   7.5) Galería — carga solo las fotos que existan en assets/fotos/
+        (si no hay ninguna, la sección queda oculta)
+   ---------------------------------------------------------- */
+(function loadGallery() {
+  const section = $("#galeria");
+  const grid = $("#galeriaGrid");
+  if (!section || !grid) return;
+
+  (CONFIG.galeria || []).forEach((file) => {
+    const src = `assets/fotos/${file}`;
+    const probe = new Image();
+    probe.onload = () => {
+      const fig = document.createElement("figure");
+      fig.className = "gtile";
+      fig.innerHTML = `<img src="${src}" alt="Rock Munchies" loading="lazy">`;
+      grid.appendChild(fig);
+      section.hidden = false; // mostramos la sección al cargar la primera foto
+    };
+    probe.src = src; // si falla (no existe), simplemente no se agrega
+  });
+})();
+
+/* Foto real opcional para el fondo del hero (assets/fotos/hero.jpg) */
+(function heroPhoto() {
+  const hero = document.querySelector(".hero");
+  if (!hero) return;
+  const probe = new Image();
+  probe.onload = () => hero.classList.add("hero--photo");
+  probe.src = "assets/fotos/hero.jpg";
 })();
 
 /* ----------------------------------------------------------

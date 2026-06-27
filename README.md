@@ -24,22 +24,33 @@ una estética inspirada en el rock. Estático, sin servidor: funciona abriendo
 
 ## ✏️ Configuración (importante)
 
-Abrí **`script.js`** y editá el objeto `CONFIG` al inicio con tus datos reales:
+Los datos de contacto ya vienen cargados con la info pública del local
+(Los Robles, Managua · +505 2293 5514 · rockmunchies@gmail.com · IG/FB @rockmunchies).
+Revisá el objeto `CONFIG` al inicio de **`script.js`** y, sobre todo,
+**confirmá el número de WhatsApp** (puede ser distinto al teléfono fijo):
 
 ```js
 const CONFIG = {
-  whatsapp: "50500000000",   // tu número con código de país, solo dígitos
-  telefono:  "+505 0000 0000",
-  email:     "hola@rockmunchies.com",
-  direccion: "Tu dirección, ciudad, Nicaragua",
-  instagram: "https://instagram.com/...",
-  facebook:  "https://facebook.com/...",
-  mapsQuery: "Managua, Nicaragua",   // dirección o coordenadas para el mapa
+  whatsapp: "50522935514",   // ⚠️ confirmá tu WhatsApp (solo dígitos)
+  telefono:  "+505 2293 5514",
+  email:     "rockmunchies@gmail.com",
+  direccion: "Los Robles, Managua, Nicaragua",
+  instagram: "https://instagram.com/rockmunchies",
+  facebook:  "https://facebook.com/rockmunchies",
+  galeria:   ["foto-1.jpg", "foto-2.jpg", ...],  // fotos de assets/fotos/
   ...
 };
 ```
 
 También podés ajustar el horario y la capacidad de las reservas en `CONFIG.reservas`.
+
+## 📸 Fotos / Galería
+
+Poné tus fotos en **`assets/fotos/`** con los nombres `foto-1.jpg`, `foto-2.jpg`, …
+(ver `assets/fotos/README.md`). Aparecen solas en la sección **Galería**; si no hay
+ninguna, la sección se oculta. Opcional: `assets/fotos/hero.jpg` se usa como fondo
+del encabezado. *(Instagram/Facebook bloquean la descarga automática, por eso las
+fotos se agregan a mano.)*
 
 ## Cómo verlo
 

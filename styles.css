@@ -260,6 +260,29 @@ code {
 .reserve__status h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; text-transform: uppercase; color: var(--ink); }
 .reserve__status .btn { margin-top: .5rem; }
 
+/* ---------- Galería ---------- */
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem;
+}
+.gtile {
+  margin: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line);
+  aspect-ratio: 1 / 1; background: var(--bg-3);
+}
+.gtile img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; display: block; }
+.gtile:hover img { transform: scale(1.07); }
+.gallery__follow { text-align: center; color: var(--ink-dim); margin-top: 1.6rem; }
+.gallery__follow a { color: var(--gold); font-weight: 500; }
+.gallery__follow a:hover { text-decoration: underline; }
+
+/* Fondo del hero con FOTO real opcional (assets/fotos/hero.jpg) */
+.hero--photo {
+  background:
+    url("assets/hero-scene.svg") center top / cover no-repeat,
+    linear-gradient(rgba(14,14,14,.74), rgba(14,14,14,.84)),
+    url("assets/fotos/hero.jpg") center / cover no-repeat,
+    var(--bg);
+}
+
 /* ---------- Contacto ---------- */
 .contact { display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.6rem; align-items: stretch; }
 .contact__info { display: flex; flex-direction: column; gap: 1.2rem; }

@@ -28,6 +28,7 @@
         <a href="#menu">Menú</a>
         <a href="#pedido">Pedido</a>
         <a href="#reservas">Reservas</a>
+        <a href="#galeria">Galería</a>
         <a href="#contacto">Contacto</a>
         <a href="#" class="btn btn--wa" data-wa="hola">WhatsApp</a>
       </nav>
@@ -189,6 +190,24 @@
           <p>Completá el formulario para ver si hay lugar en el horario que querés.</p>
         </aside>
       </div>
+    </div>
+  </section>
+
+  <!-- ===================== GALERÍA ===================== -->
+  <!-- Se muestra sola cuando hay fotos en assets/fotos/ (ver CONFIG.galeria) -->
+  <section class="section" id="galeria" hidden>
+    <div class="container">
+      <header class="section__head">
+        <p class="section__kicker">De nuestras redes</p>
+        <h2 class="section__title">Galería</h2>
+        <p class="section__lead">Un vistazo a nuestras pizzas y a la movida del local 🤘📸</p>
+      </header>
+      <div class="gallery-grid" id="galeriaGrid"><!-- render dinámico --></div>
+      <p class="gallery__follow">
+        Seguinos en
+        <a id="gIg" href="#" target="_blank" rel="noopener">Instagram</a> y
+        <a id="gFb" href="#" target="_blank" rel="noopener">Facebook</a>
+      </p>
     </div>
   </section>
 
