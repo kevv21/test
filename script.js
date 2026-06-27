@@ -31,8 +31,8 @@ const CONFIG = {
   // GALERÍA: nombres de archivo dentro de assets/fotos/ (tus publicaciones).
   // Solo aparecen las que existan; si no hay ninguna, la sección se oculta sola.
   galeria: [
-    "foto-1.jpg", "foto-2.jpg", "foto-3.jpg",
-    "foto-4.jpg", "foto-5.jpg", "foto-6.jpg",
+    "foto-1.webp", "foto-2.webp", "foto-3.webp", "foto-4.webp",
+    "foto-5.webp", "foto-6.webp", "foto-7.webp", "foto-8.webp",
   ],
 
   // Horario y capacidad para las RESERVAS
@@ -81,10 +81,15 @@ const MENU = [
   { cat: "especiales", name: "Green Day", desc: "Alcachofa, aceitunas negras, parmesano y albahaca.", price: 440 },
   { cat: "especiales", name: "Brocoletta", desc: "Brócoli, piña y hongos.", price: 400 },
   { cat: "especiales", name: "Brisket", desc: "Brisket deshilachada, piña, cebollín y gravy.", price: 460 },
+
+  // ---- Munchie Rolls ----
+  { cat: "rolls", name: "Munchie Rolls de Pepperoni", desc: "Rollitos de masa rellenos de pepperoni y queso, con salsas para dipear.", price: 180, img: "munchie-rolls.webp" },
+  { cat: "rolls", name: "Munchie Rolls Trebolácteos", desc: "Rollitos de masa rellenos de mozzarella, parmesano y gorgonzola.", price: 180, img: "munchie-rolls.webp" },
 ];
 
 const CAT_LABEL = {
-  clasicas: "Clásica", oldschool: "Old School", newschool: "New School", especiales: "Especial",
+  clasicas: "Clásica", oldschool: "Old School", newschool: "New School",
+  especiales: "Especial", rolls: "Munchie Rolls",
 };
 
 /* ----------------------------------------------------------
@@ -99,7 +104,15 @@ const PROMOS = [
     name: "2 Pizzas x C$ 500",
     desc: "Llevá 2 pizzas para compartir por un solo precio. Elegí tus 2 pizzas al hacer el pedido 🍕🍕",
     price: 500,
-    img: "promo-2x500.jpg",
+    img: "promo-2x500.webp",
+    badge: "2x",
+  },
+  {
+    id: "promo-2hawaianas",
+    name: "2 Hawaianas x C$ 500",
+    desc: "Doble de jamón y piña para compartir. Dos pizzas Hawaianas por un solo precio 🍍🍕",
+    price: 500,
+    img: "promo-2hawaianas.webp",
     badge: "2x",
   },
 ];
@@ -131,8 +144,9 @@ function renderMenu(filter = "all") {
   menuGrid.innerHTML = "";
   MENU.filter((p) => filter === "all" || p.cat === filter).forEach((p) => {
     const card = document.createElement("article");
-    card.className = "card";
+    card.className = p.img ? "card card--photo" : "card";
     card.innerHTML = `
+      ${p.img ? `<div class="card__media"><img src="assets/fotos/${p.img}" alt="${p.name}" loading="lazy" onerror="this.closest('.card__media').remove()"></div>` : ""}
       <span class="card__tag">${CAT_LABEL[p.cat]}</span>
       <h3 class="card__name">${p.name}</h3>
       <p class="card__desc">${p.desc}</p>

@@ -3,15 +3,20 @@
 Poné acá las fotos reales de tus pizzas y publicaciones. Aparecen **solas** en la
 sección **Galería** del sitio (y la sección se oculta si no hay ninguna).
 
-## Cómo agregarlas
+## Archivos en uso
 
-1. Copiá tus fotos en esta carpeta (`assets/fotos/`).
-2. Nombralas así (las que están en `CONFIG.galeria` dentro de `script.js`):
-   - `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg`, `foto-4.jpg`, `foto-5.jpg`, `foto-6.jpg`
-   - Podés agregar más nombres a la lista `CONFIG.galeria` si querés más fotos.
-3. (Opcional) `hero.jpg` → se usa como **foto de fondo** del encabezado principal.
-4. (Promo) `promo-2x500.jpg` → foto de la promo **2 pizzas x C$ 500**
-   (usá una de las tomas con las 2 pizzas). Si no está, se muestra un diseño de respaldo.
+- **Galería:** `foto-1.webp` … `foto-8.webp` (lista en `CONFIG.galeria` dentro de `script.js`).
+- **Promo 2 pizzas x C$ 500:** `promo-2x500.webp`
+- **Promo 2 Hawaianas x C$ 500:** `promo-2hawaianas.webp`
+- **Munchie Rolls (menú):** `munchie-rolls.webp`
+- **Hero (opcional):** `hero.jpg` → foto de fondo del encabezado principal.
+
+## Cómo cambiar/agregar fotos
+
+1. Reemplazá el archivo manteniendo el mismo nombre, **o**
+2. agregá uno nuevo y sumá su nombre a `CONFIG.galeria` (galería) o al campo
+   `img` del item/promo correspondiente en `script.js`.
+   Si un archivo no existe, se muestra un diseño de respaldo automáticamente.
 
 ## Recomendaciones
 
