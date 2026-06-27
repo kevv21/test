@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260" viewBox="0 0 260 260">
+  <!-- Patrón de íconos rock estilo "muro de stickers" del menú -->
+  <g fill="none" stroke="#ece6d8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+
+    <!-- Púa de guitarra -->
+    <path d="M40 30 c12 0 18 9 15 19 c-3 11 -27 11 -30 0 c-3 -10 3 -19 15 -19 Z" opacity="0.5"/>
+
+    <!-- Estrella -->
+    <g transform="translate(190 46)" stroke="#f4c430" opacity="0.55">
+      <path d="M0 -16 L4.7 -5 L16 -5 L6.5 2.8 L10 14 L0 7 L-10 14 L-6.5 2.8 L-16 -5 L-4.7 -5 Z"/>
+    </g>
+
+    <!-- Rayo -->
+    <path d="M126 96 L112 128 L124 128 L116 158 L142 118 L128 118 L138 96 Z" stroke="#f4c430" opacity="0.5"/>
+
+    <!-- Vinilo -->
+    <g transform="translate(54 150)" opacity="0.45">
+      <circle r="20"/>
+      <circle r="6"/>
+    </g>
+
+    <!-- Estrella pequeña -->
+    <g transform="translate(214 168) scale(0.7)" stroke="#f4c430" opacity="0.5">
+      <path d="M0 -16 L4.7 -5 L16 -5 L6.5 2.8 L10 14 L0 7 L-10 14 L-6.5 2.8 L-16 -5 L-4.7 -5 Z"/>
+    </g>
+
+    <!-- Púa pequeña -->
+    <path d="M150 210 c9 0 13 7 11 14 c-2 8 -20 8 -22 0 c-2 -7 2 -14 11 -14 Z" opacity="0.45"/>
+
+    <!-- Cuernos del rock 🤘 simplificados -->
+    <g transform="translate(40 222)" opacity="0.4">
+      <path d="M0 0 v-12 M6 0 v-20 M12 0 v-12 M18 0 v-18 M24 2 q-2 8 -12 8 q-12 0 -12 -10"/>
+    </g>
+  </g>
+</svg>

@@ -1,27 +1,68 @@
-# Excel Data Manager
+# 🍕 Rock Munchies — Sitio web
 
-A browser-based tool to upload, view, edit, and describe Excel/CSV data — no server required.
+Sitio web para **Rock Munchies**, pizzería al estilo romano (delivery y local) con
+una estética inspirada en el rock. Estático, sin servidor: funciona abriendo
+`index.html` en cualquier navegador y se ve igual en teléfono y computadora.
 
-## Features
+## Funciones
 
-- **Upload** `.xlsx`, `.xls`, or `.csv` files via drag-and-drop or file picker
-- **Multi-sheet** support with tab switching
-- **View** data in a paginated, sortable table
-- **Search** across all columns in real time
-- **Edit** any cell by double-clicking
-- **Add / delete** rows
-- **Describe** data — per-column stats: count, missing, unique, min, max, mean, median, sum (numeric), top values (text)
-- **Download** modified data as CSV or Excel
+- **Menú** completo por categorías (Clásicas, Old School, New School, Especiales) con filtros.
+- **Promociones** (ej. 2 pizzas x C$ 500) en su propia sección, agregables al pedido.
+- **Pedido online**: armás el carrito y se envía listo por **WhatsApp** (delivery o recoger en local).
+- **Reservas** con verificación de **disponibilidad** por fecha, hora y cantidad de personas.
+- **Contacto** con teléfono, email, redes, horario y mapa de Google.
+- **Responsive**: diseño adaptable a celular y escritorio, con estética rock (oscuro + dorado).
 
-## Usage
+## Archivos
 
-1. Open `index.html` in any modern browser (Chrome, Firefox, Edge, Safari).
-2. Drag your file onto the upload area, or click **Choose File**.
-3. Browse and edit the table. Double-click any cell to edit, press Enter or Tab to confirm.
-4. Click **+ Add Row** to append a blank row; click **✕** on any row to delete it.
-5. Use the search box to filter rows, and the column headers to sort.
-6. When done, click **Download CSV** or **Download Excel** in the top-right corner.
+| Archivo | Qué contiene |
+|---|---|
+| `index.html` | Estructura de la página |
+| `styles.css` | Estilos y diseño responsive |
+| `script.js`  | Menú, carrito, reservas y configuración |
+| `assets/`    | Fondos e ilustraciones vectoriales (SVG) estilo rock |
+| `bot/`       | Bot de WhatsApp (WhatsApp Cloud API) listo para desplegar |
 
-## Requirements
+## ✏️ Configuración (importante)
 
-Internet connection (CDN loads SheetJS once), or serve the page locally with SheetJS bundled.
+Los datos de contacto ya vienen cargados con la info pública del local
+(Los Robles, Managua · +505 2293 5514 · rockmunchies@gmail.com · IG/FB @rockmunchies).
+Revisá el objeto `CONFIG` al inicio de **`script.js`** y, sobre todo,
+**confirmá el número de WhatsApp** (puede ser distinto al teléfono fijo):
+
+```js
+const CONFIG = {
+  whatsapp: "50522935514",   // ⚠️ confirmá tu WhatsApp (solo dígitos)
+  telefono:  "+505 2293 5514",
+  email:     "rockmunchies@gmail.com",
+  direccion: "Los Robles, Managua, Nicaragua",
+  instagram: "https://instagram.com/rockmunchies",
+  facebook:  "https://facebook.com/rockmunchies",
+  galeria:   ["foto-1.jpg", "foto-2.jpg", ...],  // fotos de assets/fotos/
+  ...
+};
+```
+
+También podés ajustar el horario y la capacidad de las reservas en `CONFIG.reservas`.
+
+## 📸 Fotos / Galería
+
+Poné tus fotos en **`assets/fotos/`** con los nombres `foto-1.jpg`, `foto-2.jpg`, …
+(ver `assets/fotos/README.md`). Aparecen solas en la sección **Galería**; si no hay
+ninguna, la sección se oculta. Opcional: `assets/fotos/hero.jpg` se usa como fondo
+del encabezado. *(Instagram/Facebook bloquean la descarga automática, por eso las
+fotos se agregan a mano.)*
+
+## Cómo verlo
+
+- **Local:** abrí `index.html` en el navegador (doble clic).
+- **Publicarlo gratis:** subí estos archivos a **GitHub Pages**, **Netlify** o **Vercel**.
+
+## Notas
+
+- Los precios corresponden a la pizza de 14″ del menú e **incluyen IVA (15%)**.
+  El IVA se aplica automáticamente sobre los precios base; ajustá o quitá el
+  porcentaje en `CONFIG.iva` (`0.15` = 15%, `0` = sin IVA).
+- La disponibilidad de reservas se calcula en el dispositivo (demo). Para que sea
+  compartida entre todos los clientes en tiempo real hace falta un backend o
+  conectarlo al bot de WhatsApp (ver guía aparte).
