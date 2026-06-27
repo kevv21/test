@@ -10,6 +10,8 @@ sección **Galería** del sitio (y la sección se oculta si no hay ninguna).
    - `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg`, `foto-4.jpg`, `foto-5.jpg`, `foto-6.jpg`
    - Podés agregar más nombres a la lista `CONFIG.galeria` si querés más fotos.
 3. (Opcional) `hero.jpg` → se usa como **foto de fondo** del encabezado principal.
+4. (Promo) `promo-2x500.jpg` → foto de la promo **2 pizzas x C$ 500**
+   (usá una de las tomas con las 2 pizzas). Si no está, se muestra un diseño de respaldo.
 
 ## Recomendaciones
 

@@ -88,6 +88,23 @@ const CAT_LABEL = {
 };
 
 /* ----------------------------------------------------------
+   2b) PROMOCIONES
+   El precio es FINAL (ya con IVA incluido): no se le suma IVA.
+   Poné la foto en assets/fotos/<img>; si no existe, se muestra
+   un diseño de respaldo automáticamente.
+   ---------------------------------------------------------- */
+const PROMOS = [
+  {
+    id: "promo-2x500",
+    name: "2 Pizzas x C$ 500",
+    desc: "Llevá 2 pizzas para compartir por un solo precio. Elegí tus 2 pizzas al hacer el pedido 🍕🍕",
+    price: 500,
+    img: "promo-2x500.jpg",
+    badge: "2x",
+  },
+];
+
+/* ----------------------------------------------------------
    3) Utilidades
    ---------------------------------------------------------- */
 const $  = (s, c = document) => c.querySelector(s);
@@ -137,6 +154,34 @@ $$(".filter").forEach((btn) => {
 });
 
 /* ----------------------------------------------------------
+   4b) Render de promociones
+   ---------------------------------------------------------- */
+(function renderPromos() {
+  const grid = $("#promosGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  PROMOS.forEach((p) => {
+    const art = document.createElement("article");
+    art.className = "promo";
+    art.innerHTML = `
+      <div class="promo__media">
+        <img src="assets/fotos/${p.img}" alt="${p.name}" loading="lazy"
+             onerror="this.remove()">
+        ${p.badge ? `<span class="promo__badge">${p.badge}</span>` : ""}
+      </div>
+      <div class="promo__body">
+        <h3 class="promo__name">${p.name}</h3>
+        <p class="promo__desc">${p.desc}</p>
+        <div class="promo__foot">
+          <span class="promo__price">${money(p.price)}</span>
+          <button class="promo__add" data-promo="${p.id}">Agregar al pedido</button>
+        </div>
+      </div>`;
+    grid.appendChild(art);
+  });
+})();
+
+/* ----------------------------------------------------------
    5) Carrito / pedido
    ---------------------------------------------------------- */
 const cart = new Map(); // name -> { ...pizza, qty }
@@ -149,6 +194,17 @@ function addToCart(name) {
   cart.set(name, item);
   renderCart();
   toast(`🍕 ${name} agregada`);
+}
+
+// Las promos tienen precio FINAL (no se les aplica IVA encima)
+function addPromo(id) {
+  const promo = PROMOS.find((p) => p.id === id);
+  if (!promo) return;
+  const item = cart.get(promo.name) || { name: promo.name, price: promo.price, qty: 0, promo: true };
+  item.qty += 1;
+  cart.set(promo.name, item);
+  renderCart();
+  toast(`🔥 ${promo.name} agregada`);
 }
 
 function changeQty(name, delta) {
@@ -210,6 +266,9 @@ function renderCart() {
 document.addEventListener("click", (e) => {
   const add = e.target.closest(".card__add");
   if (add) return addToCart(add.dataset.name);
+
+  const promoAdd = e.target.closest(".promo__add");
+  if (promoAdd) return addPromo(promoAdd.dataset.promo);
 
   const qtyBtn = e.target.closest(".qty button");
   if (qtyBtn) return changeQty(qtyBtn.dataset.name, qtyBtn.dataset.act === "inc" ? 1 : -1);

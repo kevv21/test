@@ -7,6 +7,7 @@ una estética inspirada en el rock. Estático, sin servidor: funciona abriendo
 ## Funciones
 
 - **Menú** completo por categorías (Clásicas, Old School, New School, Especiales) con filtros.
+- **Promociones** (ej. 2 pizzas x C$ 500) en su propia sección, agregables al pedido.
 - **Pedido online**: armás el carrito y se envía listo por **WhatsApp** (delivery o recoger en local).
 - **Reservas** con verificación de **disponibilidad** por fecha, hora y cantidad de personas.
 - **Contacto** con teléfono, email, redes, horario y mapa de Google.
