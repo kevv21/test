@@ -100,6 +100,7 @@ code {
 .hero {
   position: relative; overflow: hidden;
   background:
+    url("assets/hero-scene.svg") center top / cover no-repeat,
     radial-gradient(1200px 500px at 80% -10%, rgba(226,59,59,.18), transparent 60%),
     radial-gradient(900px 500px at 10% 10%, rgba(244,196,48,.12), transparent 55%),
     var(--bg);
@@ -143,8 +144,15 @@ code {
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ---------- Secciones ---------- */
-.section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+.section { padding: clamp(3.5rem, 8vw, 6rem) 0; position: relative; }
 .section--alt { background: var(--bg-2); border-block: 1px solid var(--line); }
+/* Textura de íconos rock (estilo "muro de stickers" del menú) */
+.section::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("assets/rock-pattern.svg");
+  background-size: 300px; opacity: .14;
+}
+.section .container { position: relative; z-index: 1; }
 .section__head { text-align: center; max-width: 720px; margin: 0 auto clamp(2rem, 4vw, 3rem); }
 .section__kicker {
   color: var(--red); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; font-size: .8rem;

@@ -1,8 +1,8 @@
 # 🍕 Rock Munchies — Sitio web
 
 Sitio web para **Rock Munchies**, pizzería al estilo romano (delivery y local) con
-inspiración en el rock latinoamericano e inglés. Estático, sin servidor: funciona
-abriendo `index.html` en cualquier navegador y se ve igual en teléfono y computadora.
+una estética inspirada en el rock. Estático, sin servidor: funciona abriendo
+`index.html` en cualquier navegador y se ve igual en teléfono y computadora.
 
 ## Funciones
 
@@ -19,6 +19,8 @@ abriendo `index.html` en cualquier navegador y se ve igual en teléfono y comput
 | `index.html` | Estructura de la página |
 | `styles.css` | Estilos y diseño responsive |
 | `script.js`  | Menú, carrito, reservas y configuración |
+| `assets/`    | Fondos e ilustraciones vectoriales (SVG) estilo rock |
+| `bot/`       | Bot de WhatsApp (WhatsApp Cloud API) listo para desplegar |
 
 ## ✏️ Configuración (importante)
 
