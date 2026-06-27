@@ -7,10 +7,11 @@
    ---------------------------------------------------------- */
 const CONFIG = {
   // Número de WhatsApp con código de país, SOLO dígitos (sin +, sin espacios).
-  // ⚠️ Confirmá tu número de WhatsApp (puede ser distinto al fijo del local).
-  whatsapp: "50522935514",
+  // ⚠️ Vacío por ahora. Cuando pongas tu número acá (ej. "50588887777"),
+  // los botones de WhatsApp se activan solos.
+  whatsapp: "",
 
-  telefono:  "+505 2293 5514",
+  telefono:  "",   // vacío = se muestra "Próximamente" en Contacto
   email:     "rockmunchies@gmail.com",
   direccion: "Los Robles, Managua, Nicaragua",
 
@@ -126,6 +127,14 @@ const money = (n) => `${CONFIG.moneda} ${n.toLocaleString("es-NI")}`;
 // Precio con IVA incluido, redondeado al córdoba más cercano
 const precioFinal = (base) => Math.round(base * (1 + (CONFIG.iva || 0)));
 const waLink = (text) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
+const WA_GREETING = "¡Hola Rock Munchies! 🤘 Quiero hacer una consulta.";
+const waReady = () => Boolean(CONFIG.whatsapp);
+// Abre WhatsApp si hay número configurado; si no, avisa "próximamente"
+function openWa(text) {
+  if (!waReady()) { toast("📲 WhatsApp disponible muy pronto 🤘"); return false; }
+  window.open(waLink(text), "_blank");
+  return true;
+}
 
 function toast(msg) {
   const t = $("#toast");
@@ -286,6 +295,10 @@ document.addEventListener("click", (e) => {
 
   const qtyBtn = e.target.closest(".qty button");
   if (qtyBtn) return changeQty(qtyBtn.dataset.name, qtyBtn.dataset.act === "inc" ? 1 : -1);
+
+  // Botones de WhatsApp (se mantienen visibles aunque no haya número aún)
+  const wa = e.target.closest("[data-wa]");
+  if (wa) { e.preventDefault(); openWa(WA_GREETING); }
 });
 
 // Tipo de pedido (delivery / local)
@@ -320,7 +333,7 @@ $("#sendOrder").addEventListener("click", () => {
   if (CONFIG.iva) msg += ` _(IVA ${Math.round(CONFIG.iva * 100)}% incluido)_`;
   if (notes) msg += `\n\n*Notas:* ${notes}`;
 
-  window.open(waLink(msg), "_blank");
+  openWa(msg);
 });
 
 /* ----------------------------------------------------------
@@ -402,7 +415,6 @@ $("#reserveForm").addEventListener("submit", (e) => {
 function confirmReserva() {
   const r = reservaPendiente;
   if (!r) return;
-  saveReserva(r.key, r.people);
 
   const msg =
     `🎸 *NUEVA RESERVA — ROCK MUNCHIES*\n\n` +
@@ -412,7 +424,9 @@ function confirmReserva() {
     `*Personas:* ${r.people}\n` +
     `*Teléfono:* ${r.phone}`;
 
-  window.open(waLink(msg), "_blank");
+  if (!openWa(msg)) return; // WhatsApp aún no configurado: avisa y no confirma
+
+  saveReserva(r.key, r.people);
 
   const box = $("#reserveStatus");
   box.className = "reserve__status is-ok";
@@ -426,10 +440,12 @@ function confirmReserva() {
 /* ----------------------------------------------------------
    7) Datos de contacto + botones de WhatsApp
    ---------------------------------------------------------- */
+// Mantiene los botones de WhatsApp visibles. Si hay número, apuntan al chat;
+// si no, quedan como botón (el click muestra "próximamente" vía openWa).
 function bindWaButtons() {
   $$("[data-wa]").forEach((el) => {
-    el.href = waLink("¡Hola Rock Munchies! 🤘 Quiero hacer una consulta.");
-    el.target = "_blank";
+    if (waReady()) { el.href = waLink(WA_GREETING); el.target = "_blank"; }
+    else { el.setAttribute("href", "#"); el.removeAttribute("target"); }
   });
 }
 
@@ -437,8 +453,13 @@ function bindWaButtons() {
   $("#cDireccion").textContent = CONFIG.direccion;
 
   const tel = $("#cTel");
-  tel.textContent = CONFIG.telefono;
-  tel.href = `tel:${CONFIG.telefono.replace(/\s+/g, "")}`;
+  if (CONFIG.telefono) {
+    tel.textContent = CONFIG.telefono;
+    tel.href = `tel:${CONFIG.telefono.replace(/\s+/g, "")}`;
+  } else {
+    tel.textContent = "Próximamente";
+    tel.removeAttribute("href");
+  }
 
   const mail = $("#cEmail");
   mail.textContent = CONFIG.email;
