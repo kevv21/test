@@ -25,3 +25,13 @@ A browser-based tool to upload, view, edit, and describe Excel/CSV data — no s
 ## Requirements
 
 Internet connection (CDN loads SheetJS once), or serve the page locally with SheetJS bundled.
+
+## Higgsfield Seedance 2.5 example (server-side)
+
+`index.ts` generates a video with `bytedance/seedance-2.5/text-to-video` through the official `@higgsfield/client` v2 SDK.
+
+1. `npm install`
+2. Create `.env.local` (Git-ignored) with `HF_CREDENTIALS=key-id:key-secret`.
+3. `npm start`. This is a **billable** request. On success it prints the video URL. Otherwise it exits non-zero and reports `failed`, `nsfw` (moderated), canceled, or an API error.
+
+Never import this code into `index.html`: the credentials must stay server-side.
